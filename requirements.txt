@@ -1,0 +1,9 @@
+pandas
+pyarrow
+scipy
+scikit-learn
+seaborn
+matplotlib
+zstandard
+flake8
+pytest
