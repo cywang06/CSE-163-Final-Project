@@ -1,8 +1,20 @@
+# Data stays off GitHub (share it on Drive instead)
+data/
 *.csv
-!tests/*.csv
 *.pgn
-*.pgn.zst
+*.zst
+*.parquet
+
+# Tiny hand-made test fixtures are allowed
+!tests/*.csv
+
+# Generated charts
+figures/
 game_outcomes.png
 white_win_rate_by_rating_gap.png
+
+# Python
 __pycache__/
+*.pyc
+.ipynb_checkpoints/
 .venv/
