@@ -1,0 +1,8 @@
+*.csv
+!tests/*.csv
+*.pgn
+*.pgn.zst
+game_outcomes.png
+white_win_rate_by_rating_gap.png
+__pycache__/
+.venv/
