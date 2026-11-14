@@ -93,3 +93,14 @@ python test_eda_and_checks.py
 python kaggle_plots.py
 flake8 *.py
 ```
+
+## Reproduce the RQ3 report figures and tables
+
+With the original Kaggle CSV at `data/games.csv`, run from the repo root:
+
+```sh
+python3 rq3_eda.py
+```
+
+This uses the shared loader and writes the cleaned Kaggle figures, rating
+summary, and category counts to `figures/rq3/`. Both figures include draws.
