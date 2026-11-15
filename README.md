@@ -20,6 +20,9 @@ put them in `data/`.
 | `check_assumptions.py` | Prints real rows to confirm the loader's assumptions (setup step 4) |
 | `kaggle_plots.py` | Kaggle figures: game outcomes, White's win rate by rating gap (saved to `figures/`) |
 | `test_*.py` | Tests on tiny hand-made fixtures |
+| `rq1_openings.py` | RQ1: opening results by rating group, chi-square assumption checks, figures |
+| `rq2_time_control.py` | RQ2: upset rates by time control and rating-gap bin, chi-square tests, figures |
+| `rq3_eda.py` | RQ3: Kaggle rating summary, outcome counts, figures |
 
 ## Setup order
 
