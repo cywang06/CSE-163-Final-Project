@@ -28,6 +28,7 @@ OUTCOMES = ["higher wins", "upset", "draw"]
 GAP_BINS = [0, 50, 100, 200]
 GAP_LABELS = ["1-50", "51-100", "101-200"]
 MAX_GAP = 200
+MIN_GAMES = 30
 FIGURE_DIR = "figures"
 
 
@@ -68,6 +69,17 @@ def prepare_rq2(df):
     df["gap_bin"] = pd.cut(df["rating_gap"], bins=GAP_BINS,
                            labels=GAP_LABELS)
     return df.reset_index(drop=True)
+
+
+def drop_small_time_controls(df, min_games=MIN_GAMES):
+    """Remove time controls with fewer than min_games games.
+
+    Returns (kept DataFrame, list of dropped time controls). Rates and
+    tests based on a handful of games would be misleading.
+    """
+    counts = df["time_control"].value_counts()
+    small = sorted(counts[counts < min_games].index)
+    return df[~df["time_control"].isin(small)].copy(), small
 
 
 def wilson_ci(successes, n, z=1.96):
@@ -177,6 +189,8 @@ def plot_upset_rates(rates, name, folder):
     fig, ax = plt.subplots(figsize=(8, 4.5))
     width = 0.25
     for i, tc in enumerate(TIME_CONTROLS):
+        if tc not in set(rates["time_control"]):
+            continue
         part = rates[rates["time_control"] == tc].set_index("gap_bin")
         part = part.reindex(GAP_LABELS)
         x = [j + (i - 1) * width for j in range(len(GAP_LABELS))]
@@ -185,6 +199,7 @@ def plot_upset_rates(rates, name, folder):
         ax.bar(x, part["upset_rate"] * 100, width, label=tc,
                yerr=[e * 100 for e in errors], capsize=3)
     ax.set_xticks(range(len(GAP_LABELS)))
+    ax.set_xlim(-0.5, len(GAP_LABELS) - 0.5)
     ax.set_xticklabels(GAP_LABELS)
     ax.set_title("%s: upset rate by rating gap and time control" % name)
     ax.set_xlabel("Rating gap bin (points)")
@@ -218,12 +233,18 @@ def run_dataset(name, df, folder=FIGURE_DIR):
                            ["time_control", "gap_bin",
                             "higher_rated_color", "outcome"])
     eu.print_summary(name + " (RQ2 games)", summary)
-    rates = outcome_rates(rq2)
+    compared, small = drop_small_time_controls(rq2)
+    if small:
+        print("\nNote: %s left out of rates, tests and the upset chart "
+              "(fewer than %d games)." % (", ".join(small), MIN_GAMES))
+    rates = outcome_rates(compared)
     print("\nOutcome rates by time control and gap bin:\n",
           rates.round(3).to_string(index=False))
     print("\nChi-square tests (H0: equal upset rate across time "
           "controls):")
-    for gap, result in tests_by_gap_bin(rq2).items():
+    for gap, result in tests_by_gap_bin(compared).items():
+        if result is None:
+            result = "not testable (fewer than 2 time controls)"
         print("  %-9s %s" % (gap, result))
     print("\nRepeat players (independence check):", repeat_players(rq2))
     for path in (plot_games_per_time_control(rq2, name, folder),

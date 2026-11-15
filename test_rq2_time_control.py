@@ -100,6 +100,15 @@ def test_upset_test_needs_two_groups():
     assert rq2.upset_test(rq2.prepare_rq2(one_tc)) is None
 
 
+def test_drop_small_time_controls():
+    df = big_table(10, 10, n=40)
+    extra = rq2.prepare_rq2(games([(1550, 1500, "1-0", "rapid")] * 2))
+    kept, small = rq2.drop_small_time_controls(pd.concat([df, extra]))
+    assert small == ["rapid"]
+    assert set(kept["time_control"]) == {"bullet", "blitz"}
+    assert len(kept) == 80
+
+
 def test_repeat_players():
     df = games([(1550, 1500, "1-0", "blitz")] * 3)
     df["white_player"] = ["ann", "ann", "bo"]
