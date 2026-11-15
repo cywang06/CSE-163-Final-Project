@@ -87,13 +87,23 @@ print(kaggle.shape, lichess.shape)
 - Do not use `WhiteRatingDiff` / `BlackRatingDiff` for prediction (RQ3);
   they reveal the result. They are not loaded.
 
+## Run the analyses
+
+```
+python rq1_openings.py
+python rq2_time_control.py
+python rq3_eda.py
+```
+
 ## Tests and style
 
 ```
 python test_data_loader.py
 python test_eda_utils.py
 python test_eda_and_checks.py
-python kaggle_plots.py
+python test_rq1_openings.py
+python test_rq2_time_control.py
+python test_rq3_eda.py
 flake8 *.py
 ```
 
