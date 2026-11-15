@@ -218,8 +218,12 @@ def save(fig, folder, name, kind):
     return path
 
 
-def run_dataset(name, df, folder=FIGURE_DIR):
-    """Print every RQ2 EDA result for one dataset and save its figures."""
+def run_dataset(name, df, figures=("upset",), folder=FIGURE_DIR):
+    """Print every RQ2 EDA result for one dataset and save its figures.
+
+    figures chooses which charts to save: any of "counts" (games per
+    time control), "histogram" (rating gap) and "upset" (upset rates).
+    """
     print("\n" + "=" * 60 + "\nRQ2: %s\n" % name + "=" * 60)
     _, steps = filter_steps(df)
     print("Rows left after each filter:")
@@ -247,18 +251,24 @@ def run_dataset(name, df, folder=FIGURE_DIR):
             result = "not testable (fewer than 2 time controls)"
         print("  %-9s %s" % (gap, result))
     print("\nRepeat players (independence check):", repeat_players(rq2))
-    for path in (plot_games_per_time_control(rq2, name, folder),
-                 plot_gap_histogram(rq2, name, folder),
-                 plot_upset_rates(rates, name, folder)):
-        print("Saved", path)
+    print("\nGames per time control:\n",
+          rq2["time_control"].value_counts().reindex(
+              TIME_CONTROLS, fill_value=0))
+    plots = {
+        "counts": lambda: plot_games_per_time_control(rq2, name, folder),
+        "histogram": lambda: plot_gap_histogram(rq2, name, folder),
+        "upset": lambda: plot_upset_rates(rates, name, folder),
+    }
+    for kind in figures:
+        print("Saved", plots[kind]())
     return rq2, rates
 
 
 def main():
     """Run the RQ2 EDA on the Kaggle and Lichess data."""
     kaggle, lichess = dl.load_both()
-    run_dataset("Kaggle", kaggle)
-    run_dataset("Lichess", lichess)
+    run_dataset("Kaggle", kaggle, figures=("upset",))
+    run_dataset("Lichess", lichess, figures=("upset", "histogram"))
 
 
 if __name__ == "__main__":
