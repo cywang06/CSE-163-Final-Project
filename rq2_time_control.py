@@ -17,11 +17,13 @@ import os
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 from scipy.stats import chi2_contingency
 
 import eda_utils as eu
 
 matplotlib.use("Agg")
+sns.set_theme()   # same look as the RQ1 figures
 
 TIME_CONTROLS = ["bullet", "blitz", "rapid"]
 OUTCOMES = ["higher wins", "upset", "draw"]
