@@ -163,7 +163,7 @@ def plot_games_per_time_control(df, name, folder):
         TIME_CONTROLS, fill_value=0)
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.bar(counts.index, counts.values, color="#4C72B0")
-    ax.set_title("%s: games per time control (gap 1-200)" % name)
+    ax.set_title("Games per time control (rating gap 1-200)")
     ax.set_xlabel("Time control")
     ax.set_ylabel("Number of games")
     for i, value in enumerate(counts.values):
@@ -180,7 +180,8 @@ def plot_gap_histogram(df, name, folder):
             continue
         ax.hist(gaps, bins=range(0, MAX_GAP + 10, 10), density=True,
                 histtype="step", linewidth=2, label=tc)
-    ax.set_title("%s: rating gap distribution by time control" % name)
+    ax.set_title("Rating gap distribution by time control "
+                 "(rating gap 1-200)")
     ax.set_xlabel("Rating gap (points)")
     ax.set_ylabel("Share of games (density)")
     ax.legend(title="Time control")
@@ -206,10 +207,9 @@ def plot_upset_rates(rates, name, folder):
     ax.set_xlim(-0.5, len(GAP_LABELS) - 0.5)
     ax.set_xticklabels(GAP_LABELS)
     if len(present) == 1:
-        title = "%s: upset rate by rating gap (%s games)" % (
-            name, present[0])
+        title = "Upset rate by rating gap (%s games)" % present[0]
     else:
-        title = "%s: upset rate by rating gap and time control" % name
+        title = "Upset rate by rating gap and time control"
     ax.set_title(title)
     ax.set_xlabel("Rating gap bin (points)")
     ax.set_ylabel("Upset rate (%), 95% Wilson CI")
