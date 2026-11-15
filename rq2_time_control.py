@@ -7,8 +7,9 @@ evenly matched the players were.
 
     python rq2_time_control.py
 
-Reads data/games.csv and data/lichess_clean.parquet (see README) and
-saves figures to figures/.
+Uses only the Lichess sample (data/lichess_clean.parquet, see README):
+the Kaggle data has almost no bullet or blitz games, so it cannot be
+used to compare time controls. Figures are saved to figures/.
 """
 import math
 import os
@@ -18,7 +19,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.stats import chi2_contingency
 
-import data_loader as dl
 import eda_utils as eu
 
 matplotlib.use("Agg")
@@ -30,6 +30,7 @@ GAP_LABELS = ["1-50", "51-100", "101-200"]
 MAX_GAP = 200
 MIN_GAMES = 30
 FIGURE_DIR = "figures"
+LICHESS_PATH = "data/lichess_clean.parquet"
 
 
 def filter_steps(df):
@@ -271,9 +272,8 @@ def run_dataset(name, df, figures=("upset",), folder=FIGURE_DIR):
 
 
 def main():
-    """Run the RQ2 EDA on the Kaggle and Lichess data."""
-    kaggle, lichess = dl.load_both()
-    run_dataset("Kaggle", kaggle, figures=("upset",))
+    """Run the RQ2 EDA on the Lichess sample."""
+    lichess = pd.read_parquet(LICHESS_PATH)
     run_dataset("Lichess", lichess, figures=("upset", "histogram"))
 
 
